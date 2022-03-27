@@ -12,7 +12,7 @@ public static class PerformanceService
     {
         var result = new PerformanceModel();
         result.Count = rows.Count;
-        result.Name = "Test performance - Insert one by one";
+        result.Name = "Insert one by one single connection";
         var timer = new Stopwatch();
         timer.Start();
         foreach (var row in rows)
@@ -30,7 +30,7 @@ public static class PerformanceService
     {
         var result = new PerformanceModel();
         result.Count = rows.Count;
-        result.Name = "Test performance - Insert one by one";
+        result.Name = "Insert one by one common connection";
         var timer = new Stopwatch();
 
         using SqlConnection connection = new SqlConnection(DbServices.connconnString);
@@ -52,7 +52,7 @@ public static class PerformanceService
     {
         var result = new PerformanceModel();
         result.Count = rows.Count;
-        result.Name = "Test performance - Insert one range";
+        result.Name = "Insert one range - one connection";
         var timer = new Stopwatch();
         
         var dt = ConverService.ToDataTable(rows);

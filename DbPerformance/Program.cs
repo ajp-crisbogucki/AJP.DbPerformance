@@ -14,5 +14,4 @@ PerformanceService.PerformanceOneByOneInsertSingleConnection(data);
 PerformanceService.PerformanceOneByOneInsertCommonConnection(data);
 PerformanceService.PerformanceWithBulkCopy(data);
 
-
 Console.WriteLine("Test performance stop");
