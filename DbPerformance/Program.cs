@@ -10,8 +10,10 @@ var data= FileService.ReadCsv("./../../../kody.csv");
 //For create table uncomment this part code
 //DbServices.CreateTable();
 
-PerformanceService.PerformanceOneByOneInsertSingleConnection(data);
-PerformanceService.PerformanceOneByOneInsertCommonConnection(data);
-PerformanceService.PerformanceWithBulkCopy(data);
-
+//PerformanceService.PerformanceOneByOneInsertSingleConnection(data);
+//PerformanceService.PerformanceOneByOneInsertCommonConnection(data);
+//PerformanceService.PerformanceWithBulkCopy(data);
+//PerformanceService.PerformanceWithEfOneByOneInsert(data);
+//PerformanceService.PerformanceWithEfOnePackage(data);
+PerformanceService.PerformanceWithEfPackageSize(data);
 Console.WriteLine("Test performance stop");

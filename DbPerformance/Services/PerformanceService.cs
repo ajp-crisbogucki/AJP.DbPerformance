@@ -67,4 +67,47 @@ public static class PerformanceService
 
         DisplayService.DisplayResult(result);
     }
+    
+    public static void PerformanceWithEfOneByOneInsert(List<RowModel> rows)
+    {
+        var result = new PerformanceModel();
+        result.Count = rows.Count;
+        result.Name = "Insert one by one by Entity Framework ";
+        var timer = new Stopwatch();
+        timer.Start();
+        foreach (var row in rows)
+        {
+            DbServices.AdSingleByEf(row);
+        }
+        timer.Stop();
+        result.Time = timer.ElapsedMilliseconds;
+
+        DisplayService.DisplayResult(result);
+    }
+    
+    public static void PerformanceWithEfOnePackage(List<RowModel> rows)
+    {
+        var result = new PerformanceModel();
+        result.Count = rows.Count;
+        result.Name = "Insert one package by Entity Framework ";
+        var timer = new Stopwatch();
+        timer.Start();
+        DbServices.AddOnePackageByEf(rows);
+        timer.Stop();
+        result.Time = timer.ElapsedMilliseconds;
+        DisplayService.DisplayResult(result);
+    }
+    
+    public static void PerformanceWithEfPackageSize(List<RowModel> rows)
+    {
+        var result = new PerformanceModel();
+        result.Count = rows.Count;
+        result.Name = "Insert package size 1000 row by EF";
+        var timer = new Stopwatch();
+        timer.Start();
+        DbServices.AddOnePackageSizeByEf(rows);
+        timer.Stop();
+        result.Time = timer.ElapsedMilliseconds;
+        DisplayService.DisplayResult(result);
+    }
 }

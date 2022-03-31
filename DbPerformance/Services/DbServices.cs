@@ -1,12 +1,15 @@
 using System.Data.Common;
 using System.Data.SqlClient;
+using DbPerformance.EntityFramework;
 using DbPerformance.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DbPerformance.Services;
 
 public static class DbServices
 {
-    public static string connconnString = "Server=localhost,1433;Database=dbMyProjects;User Id=sa;Password=tajne_haslo;";
+    public static string connconnString =
+        "Server=localhost,1433;Database=dbMyProjects;User Id=sa;Password=tajne_haslo;";
 
     public static void CreateTable()
     {
@@ -36,17 +39,19 @@ public static class DbServices
         var result = 0;
         while (reader.Read())
         {
-            result = (int)reader[0];    
+            result = (int) reader[0];
         }
+
         connection.Close();
         return result;
-
     }
+
     public static void AddSingle(RowModel model)
     {
         using SqlConnection connection = new SqlConnection(connconnString);
         connection.Open();
-        var cmd = new SqlCommand("INSERT INTO dbMyProjects.dbo.KODY (KOD_POCZTOWY, ADRES, MIEJSCOWOSC, WOJEWODZTWO, POWIAT) VALUES (@KodPocztowy, @Adres, @Miejscowosc, @Wojewodztwo, @Powiat)");
+        var cmd = new SqlCommand(
+            "INSERT INTO dbMyProjects.dbo.KODY (KOD_POCZTOWY, ADRES, MIEJSCOWOSC, WOJEWODZTWO, POWIAT) VALUES (@KodPocztowy, @Adres, @Miejscowosc, @Wojewodztwo, @Powiat)");
         cmd.Parameters.AddWithValue("@KodPocztowy", model.KodPocztowy);
         cmd.Parameters.AddWithValue("Adres", model.Adres);
         cmd.Parameters.AddWithValue("Miejscowosc", model.Miejscowosc);
@@ -57,10 +62,11 @@ public static class DbServices
         cmd.ExecuteNonQuery();
         connection.Close();
     }
-    
+
     public static void AddSingle(RowModel model, SqlConnection connection)
     {
-        var cmd = new SqlCommand("INSERT INTO dbMyProjects.dbo.KODY (KOD_POCZTOWY, ADRES, MIEJSCOWOSC, WOJEWODZTWO, POWIAT) VALUES (@KodPocztowy, @Adres, @Miejscowosc, @Wojewodztwo, @Powiat)");
+        var cmd = new SqlCommand(
+            "INSERT INTO dbMyProjects.dbo.KODY (KOD_POCZTOWY, ADRES, MIEJSCOWOSC, WOJEWODZTWO, POWIAT) VALUES (@KodPocztowy, @Adres, @Miejscowosc, @Wojewodztwo, @Powiat)");
         cmd.Parameters.AddWithValue("@KodPocztowy", model.KodPocztowy);
         cmd.Parameters.AddWithValue("Adres", model.Adres);
         cmd.Parameters.AddWithValue("Miejscowosc", model.Miejscowosc);
@@ -70,7 +76,7 @@ public static class DbServices
         cmd.Connection = connection;
         cmd.ExecuteNonQuery();
     }
-    
+
     public static void WithBulkCopy(DbDataReader rows)
     {
         using SqlConnection connection = new SqlConnection(connconnString);
@@ -80,6 +86,36 @@ public static class DbServices
             bulkCopy.DestinationTableName = "dbo.KODY";
             bulkCopy.WriteToServer(rows);
         }
+
         connection.Close();
+    }
+    
+    public static void AdSingleByEf(RowModel model)
+    {
+        using var context = new EfDbContext();
+        context.Kody.Add(model);
+        context.SaveChanges();
+    }
+    
+    public static void AddOnePackageByEf(List<RowModel> models)
+    {
+        using var context = new EfDbContext();
+        foreach (var model in models)
+        {
+            context.Kody.Add(model);    
+        }
+        context.SaveChanges();
+    }
+    
+    public static void AddOnePackageSizeByEf(List<RowModel> models)
+    {
+        using var context = new EfDbContext();
+        for (var index = 0; index < models.Count; index++)
+        {
+            var model = models[index];
+            context.Kody.Add(model);
+            if (index % 1000 == 0) context.SaveChanges();
+        }
+        context.SaveChanges();
     }
 }
